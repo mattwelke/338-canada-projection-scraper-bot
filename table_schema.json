@@ -1,0 +1,161 @@
+[
+  {
+    "name": "day",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "The day the projection data used as the source was published. Corresponds to the part of the web page labelled \"Latest update: <month> <day>, <year>\"."
+  },
+  {
+    "name": "vote",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "The popular vote projection. Corresponds to the part of the web page labelled \"Popular vote projection\".",
+    "fields": [
+      {
+        "name": "party",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "The political party.",
+        "maxLength": "128"
+      },
+      {
+        "name": "vote_percent",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "The percentage of popular vote."
+      },
+      {
+        "name": "plus_or_minus_percent",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "The value of the plus or minus qualifier displayed alongside the percentage of popular vote."
+      }
+    ]
+  },
+  {
+    "name": "seat",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "The seat projection. Corresponds to the part of the web page labelled \"seat projection | <number> seats for a majority\".",
+    "fields": [
+      {
+        "name": "party",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "The political party.",
+        "maxLength": "128"
+      },
+      {
+        "name": "min",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "The lower end of the range of the seat projection for this party."
+      },
+      {
+        "name": "mid",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "The predicted seat projection for this party. This is the prominently displayed value on the website for the party."
+      },
+      {
+        "name": "max",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "The upper end of the range of the seat projection for this party."
+      }
+    ]
+  },
+  {
+    "name": "odds_most_seats",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "The projection of which party is expected to win the most seats. Corresponds to the part of the web page labelled \"Odds of winning the most seats\".",
+    "fields": [
+      {
+        "name": "party",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "The political party, or \"Tie\" if multiple parties tied for most seats.",
+        "maxLength": "128"
+      },
+      {
+        "name": "odds_percent_raw",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "A string describing the odds.",
+        "maxLength": "128"
+      }
+    ]
+  },
+  {
+    "name": "odds_outcome",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "The projection of which outcome is most likely, in terms of particular parties forming a minority or majority government. Corresponds to the part of the web page labelled \"Odds of outcome\".",
+    "fields": [
+      {
+        "name": "outcome",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "A description of the outcome, including the party name and which type of government they would form, or \"Tie\" if multiple parties tied for most seats.",
+        "maxLength": "128"
+      },
+      {
+        "name": "odds_percent_raw",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "A string describing the odds.",
+        "maxLength": "128"
+      }
+    ]
+  },
+  {
+    "name": "coalition_seat",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "The projection of potential coalitions that could be formed with seat counts for each coalition. Includes coalitions that do not reach the threshold required to form a majority government. Corresponds to the part of the web page labelled \"Seat projections of potential coalitions\".",
+    "fields": [
+      {
+        "name": "coalition",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "The political parties that would form the coalition.",
+        "maxLength": "128"
+      },
+      {
+        "name": "seats",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "The number of seats in the coalition."
+      }
+    ]
+  },
+  {
+    "name": "coalition_odds_most_seats",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "The projection of which potential coalition that could be formed is expected to have the most seats. Corresponds to the part of the web page labelled \"Odds of reaching <number> seats\".",
+    "fields": [
+      {
+        "name": "coalition",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "The political parties that would form the coalition.",
+        "maxLength": "128"
+      },
+      {
+        "name": "odds_percent_raw",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "A string describing the odds.",
+        "maxLength": "128"
+      }
+    ]
+  },
+  {
+    "name": "inserted_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "A timestamp recording when this record was inserted."
+  }
+]

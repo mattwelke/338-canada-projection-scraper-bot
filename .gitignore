@@ -1,0 +1,5 @@
+.venv/
+.vscode/
+__pycache__/
+virtualenv/
+public-datasets-363301*.json
