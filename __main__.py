@@ -6,6 +6,17 @@ import requests
 
 # from test_html import html as html_doc
 
+# Accounts for situation where the data looks like this because there was an up
+# or down arrow special character:
+# 138 [101-159]▲
+# Which, during scraping here, actually turns into:
+# 138 [101-159]â\x96²
+# It ensures the strings look like this, whether they have the arrow character
+# or not:
+# 138 [101-159]
+def account_for_arrow_chars(str):
+  return f"{str.split(']')[0]}]"
+
 
 def popular_vote_projection(soup):
   # Find the list of elements in the graphic for vote data. Filter it to only
@@ -54,7 +65,7 @@ def seat_projection(soup):
   # Convert those elements to a dict with data.
   party_data_raw = [{
     'party': p_els[1].string,
-    'data': p_els[0].string,
+    'data': account_for_arrow_chars(p_els[0].string),
   } for p_els in p_el_grps]
 
   # Parse the string parts of the data into the data we need.
@@ -257,3 +268,5 @@ def main(args):
       print("The row was added.")
   else:
       raise Exception("Encountered errors while inserting rows: {}".format(errors))
+
+main({})
