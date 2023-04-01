@@ -3,3 +3,5 @@
 __pycache__/
 virtualenv/
 public-datasets-363301*.json
+myaction/
+myaction.zip

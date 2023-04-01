@@ -1,10 +1,11 @@
-from bs4 import BeautifulSoup
+from base64 import b64decode
 from datetime import datetime
+import json
+from os import environ
+
+from bs4 import BeautifulSoup
 from google.cloud import bigquery
 import requests
-
-
-# from test_html import html as html_doc
 
 # Accounts for situation where the data looks like this because there was an up
 # or down arrow special character:
@@ -222,7 +223,11 @@ def coalition_odds_projection(soup):
   return coalition_data
 
 
-def main(_):
+def main(args):
+  # Decode and write GCP creds to disk
+  decoded_creds = b64decode(args['gcp_creds']).decode('utf-8')
+  bq_client = bigquery.Client.from_service_account_info(json.loads(decoded_creds))
+
   # Fetch data from 338Canada site and make a parser.
   response = requests.get('https://338canada.com/')
   soup = BeautifulSoup(response.text, 'html.parser')
@@ -260,7 +265,7 @@ def main(_):
   day_str = f"{d['year']}-{str(d['month']).zfill(2)}-{str(d['day']).zfill(2)}"
 
   # Use the parsed data with the BigQuery SDK to stream a row into the table.
-  client = bigquery.Client()
+  # client = bigquery.Client()
   rows_to_insert = [
     {
       'day': day_str,
@@ -274,10 +279,8 @@ def main(_):
     },
   ]
   print('Will insert the following data:', rows_to_insert)
-  errors = client.insert_rows_json('public-datasets-363301.canada_338_projections.records', rows_to_insert)
+  errors = bq_client.insert_rows_json('public-datasets-363301.canada_338_projections.records_copy', rows_to_insert)
   if errors == []:
       print("The row was added.")
   else:
       raise Exception("Encountered errors while inserting rows: {}".format(errors))
-
-main({})
