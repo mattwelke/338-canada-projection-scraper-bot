@@ -17,6 +17,17 @@ import requests
 def account_for_arrow_chars(str):
   return f"{str.split(']')[0]}]"
 
+# Accounts for situation where the data looks like this because there was an up
+# or down arrow special character:
+# 58%▲
+# Which, during scraping here, actually turns into:
+# 58%â\x96²
+# It ensures the strings look like this, whether they have the arrow character
+# or not:
+# 58%
+def account_for_arrow_chars_percentages(str):
+  return f"{str.split('%')[0]}%"
+
 
 def popular_vote_projection(soup):
   # Find the list of elements in the graphic for vote data. Filter it to only
@@ -100,7 +111,7 @@ def odds_winning_most_seats_projection(soup):
   # Convert those elements to a dict with data.
   party_data_raw = [{
     'party': grp[1].string,
-    'data': grp[0].string,
+    'data': account_for_arrow_chars_percentages(grp[0].string),
   } for grp in p_el_grps]
 
   # Parse the string parts of the data into the data we need.
@@ -131,7 +142,7 @@ def odds_outcome_projection(soup):
   # Convert those elements to a dict with data.
   outcome_data_raw = [{
     'outcome': grp[1].string,
-    'data': grp[0].string,
+    'data': account_for_arrow_chars_percentages(grp[0].string),
   } for grp in p_el_grps]
 
   # Parse the string parts of the data into the data we need.
@@ -211,7 +222,7 @@ def coalition_odds_projection(soup):
   return coalition_data
 
 
-def main(args):
+def main(_):
   # Fetch data from 338Canada site and make a parser.
   response = requests.get('https://338canada.com/')
   soup = BeautifulSoup(response.text, 'html.parser')
