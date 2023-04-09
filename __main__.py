@@ -342,7 +342,7 @@ def main(args):
 
   # Use the parsed data with the BigQuery SDK to stream a row into the table.
   # client = bigquery.Client()
-  rows_to_insert = [
+  row_to_insert = [
     {
       'day': day_str,
       'vote': vote_proj,
@@ -354,15 +354,17 @@ def main(args):
       'inserted_at': datetime.utcnow().isoformat(),
     },
   ]
-  print('Will insert the following data:', rows_to_insert)
-  errors = bq_client.insert_rows_json('public-datasets-363301.canada_338_projections.records', rows_to_insert)
+  bq_table = 'public-datasets-363301.canada_338_projections.records'
+  print(f'Will insert the following data to the BigQuery table {bq_table}:', row_to_insert)
+  errors = bq_client.insert_rows_json(bq_table, row_to_insert)
   if errors == []:
-      print("The row was added.")
+      print("Row insert successful.")
+      return {}
   else:
-      raise Exception("Encountered errors while inserting rows: {}".format(errors))
+      raise Exception("Encountered errors while inserting row: {}".format(errors))
 
-# This is a way to invoke the entry point locally for testing. It should be
-# commented out when deploying to OpenWhisk.
-main({
-  'gcp_creds': environ['GCP_CREDS']
-})
+# # This is a way to invoke the entry point locally for testing. It should be
+# # commented out when deploying to OpenWhisk.
+# main({
+#   'gcp_creds': environ['GCP_CREDS']
+# })
